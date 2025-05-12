@@ -1,0 +1,322 @@
+{% extends "base.html" %}
+
+{% block title %}模板庫 - 股票數據影片自動化製作系統{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="my-4">視頻模板庫</h2>
+    
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">模板類型</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="#layoutTemplates" class="list-group-item list-group-item-action active" data-bs-toggle="list">佈局模板</a>
+                    <a href="#digitalHumans" class="list-group-item list-group-item-action" data-bs-toggle="list">數位人模板</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">操作</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadTemplateModal">
+                            <i class="bi bi-upload"></i> 上傳模板
+                        </button>
+                        <button class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-clockwise"></i> 刷新
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-body">
+                    <div class="tab-content">
+                        <!-- 佈局模板 -->
+                        <div class="tab-pane fade show active" id="layoutTemplates">
+                            <h4 class="mb-4">佈局模板</h4>
+                            
+                            {% if templates.layouts %}
+                            <div class="row">
+                                {% for template in templates.layouts %}
+                                <div class="col-md-4 mb-4">
+                                    <div class="card template-item">
+                                        <div class="template-preview" style="background-image: url('{{ template.preview if template.preview else '/static/img/default-template.jpg' }}')"></div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ template.name }}</h5>
+                                            <p class="card-text small">{{ template.description }}</p>
+                                            <div class="d-flex justify-content-between">
+                                                <button class="btn btn-sm btn-primary" onclick="useTemplate('layout', '{{ template.id }}')">
+                                                    <i class="bi bi-check-circle"></i> 使用
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-secondary" onclick="previewTemplate('layout', '{{ template.id }}')">
+                                                    <i class="bi bi-eye"></i> 預覽
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="alert alert-info">
+                                <p class="mb-0">目前沒有可用的佈局模板。點擊「上傳模板」添加您的第一個模板。</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- 數位人模板 -->
+                        <div class="tab-pane fade" id="digitalHumans">
+                            <h4 class="mb-4">數位人模板</h4>
+                            
+                            {% if templates.digital_humans %}
+                            <div class="row">
+                                {% for template in templates.digital_humans %}
+                                <div class="col-md-4 mb-4">
+                                    <div class="card template-item">
+                                        <div class="template-preview" style="background-image: url('{{ template.preview if template.preview else '/static/img/default-avatar.jpg' }}')"></div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ template.name }}</h5>
+                                            <p class="card-text small">{{ template.description }}</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <span class="badge bg-info">{{ template.language }}</span>
+                                                    <span class="badge bg-secondary">{{ template.gender }}</span>
+                                                </div>
+                                                <button class="btn btn-sm btn-primary" onclick="useTemplate('digitalHuman', '{{ template.id }}')">
+                                                    <i class="bi bi-check-circle"></i> 使用
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="alert alert-info">
+                                <p class="mb-0">目前沒有可用的數位人模板。點擊「上傳模板」添加您的第一個數位人。</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 上傳模板對話框 -->
+<div class="modal fade" id="uploadTemplateModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">上傳模板</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="templateUploadForm">
+                    <div class="mb-3">
+                        <label for="templateType" class="form-label">模板類型</label>
+                        <select class="form-select" id="templateType">
+                            <option value="layout">佈局模板</option>
+                            <option value="digitalHuman">數位人模板</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="templateName" class="form-label">模板名稱</label>
+                        <input type="text" class="form-control" id="templateName" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="templateDescription" class="form-label">描述</label>
+                        <textarea class="form-control" id="templateDescription" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="templateFile" class="form-label">模板文件</label>
+                        <input class="form-control" type="file" id="templateFile" required>
+                        <div class="form-text">支援的格式：佈局模板 (.json)，數位人模板 (.mp4, .mov)</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="templatePreview" class="form-label">預覽圖 (可選)</label>
+                        <input class="form-control" type="file" id="templatePreview" accept="image/*">
+                    </div>
+                    
+                    <div id="digitalHumanOptions" style="display: none;">
+                        <div class="mb-3">
+                            <label for="dhGender" class="form-label">性別</label>
+                            <select class="form-select" id="dhGender">
+                                <option value="male">男性</option>
+                                <option value="female">女性</option>
+                                <option value="neutral">中性</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="dhLanguage" class="form-label">語言</label>
+                            <select class="form-select" id="dhLanguage">
+                                <option value="zh-TW">繁體中文</option>
+                                <option value="zh-CN">簡體中文</option>
+                                <option value="en-US">英文</option>
+                                <option value="ja-JP">日文</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="confirmUpload">上傳</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 模板預覽對話框 -->
+<div class="modal fade" id="previewTemplateModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">模板預覽</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="previewImage" src="" alt="模板預覽" class="img-fluid mb-3" style="max-height: 400px;">
+                <div id="previewDetails">
+                    <h5 id="previewName"></h5>
+                    <p id="previewDescription"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                <button type="button" class="btn btn-primary" id="usePreviewTemplate">使用此模板</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 模板類型切換邏輯
+        const templateType = document.getElementById('templateType');
+        const digitalHumanOptions = document.getElementById('digitalHumanOptions');
+        
+        if (templateType && digitalHumanOptions) {
+            templateType.addEventListener('change', function() {
+                if (this.value === 'digitalHuman') {
+                    digitalHumanOptions.style.display = 'block';
+                } else {
+                    digitalHumanOptions.style.display = 'none';
+                }
+            });
+        }
+        
+        // 上傳模板按鈕
+        const confirmUploadBtn = document.getElementById('confirmUpload');
+        if (confirmUploadBtn) {
+            confirmUploadBtn.addEventListener('click', function() {
+                const form = document.getElementById('templateUploadForm');
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+                
+                const formData = new FormData();
+                formData.append('type', document.getElementById('templateType').value);
+                formData.append('name', document.getElementById('templateName').value);
+                formData.append('description', document.getElementById('templateDescription').value);
+                
+                const templateFile = document.getElementById('templateFile').files[0];
+                if (templateFile) {
+                    formData.append('template_file', templateFile);
+                }
+                
+                const previewFile = document.getElementById('templatePreview').files[0];
+                if (previewFile) {
+                    formData.append('preview_file', previewFile);
+                }
+                
+                // 數位人選項
+                if (document.getElementById('templateType').value === 'digitalHuman') {
+                    formData.append('gender', document.getElementById('dhGender').value);
+                    formData.append('language', document.getElementById('dhLanguage').value);
+                }
+                
+                // 發送上傳請求
+                fetch('/api/upload_template', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('模板上傳成功！');
+                        window.location.reload();
+                    } else {
+                        alert('模板上傳失敗: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('上傳模板時出錯:', error);
+                    alert('上傳模板失敗，請檢查網絡連接');
+                });
+            });
+        }
+    });
+    
+    // 使用模板
+    function useTemplate(type, id) {
+        // 重定向到編輯器頁面，並傳遞模板參數
+        window.location.href = `/editor?template_type=${type}&template_id=${id}`;
+    }
+    
+    // 預覽模板
+    function previewTemplate(type, id) {
+        // 獲取模板詳情
+        fetch(`/api/get_template?type=${type}&id=${id}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const template = data.template;
+                    
+                    // 填充預覽對話框
+                    document.getElementById('previewName').textContent = template.name;
+                    document.getElementById('previewDescription').textContent = template.description;
+                    
+                    if (template.preview) {
+                        document.getElementById('previewImage').src = template.preview;
+                        document.getElementById('previewImage').style.display = 'block';
+                    } else {
+                        document.getElementById('previewImage').style.display = 'none';
+                    }
+                    
+                    // 設置使用此模板按鈕
+                    document.getElementById('usePreviewTemplate').onclick = function() {
+                        useTemplate(type, id);
+                    };
+                    
+                    // 顯示預覽對話框
+                    const modal = new bootstrap.Modal(document.getElementById('previewTemplateModal'));
+                    modal.show();
+                } else {
+                    alert('獲取模板詳情失敗: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('獲取模板詳情時出錯:', error);
+                alert('獲取模板詳情失敗，請檢查網絡連接');
+            });
+    }
+</script>
+{% endblock %}
