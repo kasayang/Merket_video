@@ -1,0 +1,335 @@
+{% extends "base.html" %}
+
+{% block title %}幫助中心 - 股票數據影片自動化製作系統{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <div class="card mb-4">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">幫助目錄</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush" id="help-list">
+                    <a href="#getting-started" class="list-group-item list-group-item-action active">開始使用</a>
+                    <a href="#articles" class="list-group-item list-group-item-action">文章處理</a>
+                    <a href="#stocks" class="list-group-item list-group-item-action">股票數據</a>
+                    <a href="#subtitles" class="list-group-item list-group-item-action">字幕編輯</a>
+                    <a href="#timeline" class="list-group-item list-group-item-action">時間軸控制</a>
+                    <a href="#video" class="list-group-item list-group-item-action">視頻生成</a>
+                    <a href="#digital-human" class="list-group-item list-group-item-action">數位人功能</a>
+                    <a href="#troubleshooting" class="list-group-item list-group-item-action">常見問題</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">聯繫我們</h5>
+            </div>
+            <div class="card-body">
+                <p>如果您有任何問題或需要協助，請聯繫我們：</p>
+                <p><i class="bi bi-envelope"></i> support@stockvideo.com</p>
+                <p><i class="bi bi-chat-dots"></i> 線上客服：週一至週五 9:00-18:00</p>
+                <button class="btn btn-primary w-100">
+                    <i class="bi bi-question-circle"></i> 提交問題
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h4 class="mb-0">系統使用幫助</h4>
+            </div>
+            <div class="card-body">
+                <!-- 開始使用 -->
+                <section id="getting-started" class="mb-5">
+                    <h3>開始使用</h3>
+                    <hr>
+                    <p>歡迎使用股票數據影片自動化製作系統！本系統旨在幫助您快速將股票分析文章轉換為專業視頻。以下是開始使用的步驟：</p>
+                    
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5>1. 創建新項目</h5>
+                            <p>點擊首頁的「開始使用」或導航欄的「編輯器」進入編輯介面。您可以點擊「新建項目」開始一個新項目。</p>
+                            
+                            <h5>2. 匯入文章</h5>
+                            <p>點擊「匯入文章」按鈕上傳您的股票分析文章，支援 TXT、DOCX 和 PDF 格式。系統會自動分析文章內容，提取關鍵信息和股票代碼。</p>
+                            
+                            <h5>3. 選擇股票數據</h5>
+                            <p>系統會自動識別文章中提到的股票代碼。您也可以手動搜索股票代碼並選擇。</p>
+                            
+                            <h5>4. 編輯字幕和時間軸</h5>
+                            <p>在編輯器中調整字幕文本和時間，使用時間軸控制視頻、音頻和字幕的同步。</p>
+                            
+                            <h5>5. 生成視頻</h5>
+                            <p>點擊「生成視頻」按鈕開始製作視頻。您可以選擇輸出格式和解析度。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> <strong>提示：</strong> 首次使用時，建議先瀏覽「模板」頁面，了解系統提供的各種視頻模板，以便選擇最適合您需求的風格。
+                    </div>
+                </section>
+                
+                <!-- 文章處理 -->
+                <section id="articles" class="mb-5">
+                    <h3>文章處理</h3>
+                    <hr>
+                    <p>系統能夠智能分析股票相關文章，提取關鍵信息和股票代碼。</p>
+                    
+                    <h5>支援的文章格式</h5>
+                    <ul>
+                        <li>純文本文件 (.txt)</li>
+                        <li>Word 文檔 (.docx)</li>
+                        <li>PDF 文件 (.pdf)</li>
+                        <li>直接輸入文字</li>
+                    </ul>
+                    
+                    <h5>文章分析功能</h5>
+                    <ul>
+                        <li>自動識別股票代碼（美股、台股、港股等）</li>
+                        <li>提取關鍵詞和重點段落</li>
+                        <li>分析文章情感傾向（正面、負面、中性）</li>
+                        <li>按句子或段落分割內容</li>
+                    </ul>
+                    
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i> <strong>注意：</strong> 文章內容必須與股票或金融市場相關，系統才能正確分析。過於專業或技術性的內容可能需要手動調整。
+                    </div>
+                </section>
+                
+                <!-- 股票數據 -->
+                <section id="stocks" class="mb-5">
+                    <h3>股票數據</h3>
+                    <hr>
+                    <p>系統可從多個來源獲取股票數據，並計算各種技術指標。</p>
+                    
+                    <h5>支援的股票市場</h5>
+                    <ul>
+                        <li>美國市場 (NYSE, NASDAQ)</li>
+                        <li>台灣市場 (TWSE, TPEx)</li>
+                        <li>香港市場 (HKEX)</li>
+                        <li>其他主要國際市場</li>
+                    </ul>
+                    
+                    <h5>技術指標</h5>
+                    <ul>
+                        <li>移動平均線 (SMA, EMA)</li>
+                        <li>相對強弱指數 (RSI)</li>
+                        <li>指數平滑異同移動平均線 (MACD)</li>
+                        <li>布林帶 (Bollinger Bands)</li>
+                        <li>成交量分析</li>
+                    </ul>
+                    
+                    <h5>圖表類型</h5>
+                    <ul>
+                        <li>K線圖</li>
+                        <li>折線圖</li>
+                        <li>OHLC圖</li>
+                        <li>區域圖</li>
+                    </ul>
+                </section>
+                
+                <!-- 其他部分以此類推... -->
+                
+                <!-- 常見問題 -->
+                <section id="troubleshooting">
+                    <h3>常見問題</h3>
+                    <hr>
+                    <div class="accordion" id="faqAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faq1">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqAnswer1">
+                                    系統無法識別我的股票代碼怎麼辦？
+                                </button>
+                            </h2>
+                            <div id="faqAnswer1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    視頻生成時間取決於多種因素，包括視頻長度、解析度和使用的效果。如果視頻生成時間過長，您可以：
+                                    <ul>
+                                        <li>降低視頻解析度（如從 4K 變更為 1080p）</li>
+                                        <li>縮短視頻長度，刪除不必要的段落</li>
+                                        <li>減少複雜效果的使用</li>
+                                        <li>檢查電腦資源使用情況，關閉不必要的程式</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faq3">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqAnswer3">
+                                    如何調整字幕顯示時間？
+                                </button>
+                            </h2>
+                            <div id="faqAnswer3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    在「字幕」標籤頁中，您可以選擇要編輯的字幕，然後調整「開始時間」和「持續時間」參數。您也可以在時間軸上直接拖動字幕項目來調整位置和長度。調整後，點擊「應用變更」按鈕保存修改。
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faq4">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqAnswer4">
+                                    系統支援哪些輸出格式？
+                                </button>
+                            </h2>
+                            <div id="faqAnswer4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    系統目前支援以下輸出格式：
+                                    <ul>
+                                        <li>MP4 (H.264/AVC 編碼) - 最通用的格式</li>
+                                        <li>MOV (QuickTime) - 適合 Apple 設備</li>
+                                        <li>WebM - 適合網頁使用</li>
+                                    </ul>
+                                    各格式均可設定不同解析度（720p、1080p、2K、4K）和幀率（24fps、30fps、60fps）。
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faq5">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqAnswer5">
+                                    如何使用數位人功能？
+                                </button>
+                            </h2>
+                            <div id="faqAnswer5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    在編輯器左側面板的「數位人選擇」區域，您可以從下拉選單中選擇一個數位人模板。啟用數位人後，系統會自動將語音與數位人嘴型進行同步。您可以調整數位人的大小和位置，選擇是否顯示數位人的背景等。目前系統提供多種不同風格和語言的數位人模板供選擇。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <p>如果您遇到其他問題，請參考我們的<a href="#" class="text-decoration-none">完整文檔</a>或<a href="#" class="text-decoration-none">聯繫客服</a>獲取幫助。</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 視頻教學 -->
+<div class="container mt-5">
+    <h3 class="text-center mb-4">視頻教學</h3>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img src="https://via.placeholder.com/400x225" class="card-img-top" alt="基礎教學">
+                <div class="card-body">
+                    <h5 class="card-title">基礎使用教學</h5>
+                    <p class="card-text">學習系統的基本操作和功能，適合新用戶。</p>
+                    <button class="btn btn-primary"><i class="bi bi-play"></i> 觀看教學</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img src="https://via.placeholder.com/400x225" class="card-img-top" alt="圖表教學">
+                <div class="card-body">
+                    <h5 class="card-title">股票圖表進階設定</h5>
+                    <p class="card-text">學習如何自訂股票圖表，顯示不同技術指標。</p>
+                    <button class="btn btn-primary"><i class="bi bi-play"></i> 觀看教學</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img src="https://via.placeholder.com/400x225" class="card-img-top" alt="數位人教學">
+                <div class="card-body">
+                    <h5 class="card-title">數位人設定指南</h5>
+                    <p class="card-text">學習如何使用和調整數位人播報功能。</p>
+                    <button class="btn btn-primary"><i class="bi bi-play"></i> 觀看教學</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 幫助導航平滑滾動
+        const helpLinks = document.querySelectorAll('#help-list a');
+        helpLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // 移除所有連結的活動狀態
+                helpLinks.forEach(l => l.classList.remove('active'));
+                
+                // 添加當前連結的活動狀態
+                this.classList.add('active');
+                
+                // 獲取目標部分
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                
+                // 平滑滾動到目標部分
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // 根據滾動位置更新活動連結
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('section');
+            
+            // 獲取最頂部的可見部分
+            let currentSection = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 120;
+                const sectionHeight = section.offsetHeight;
+                
+                if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+            
+            // 更新活動連結
+            if (currentSection) {
+                helpLinks.forEach(link => {
+                    link.classList.remove('active');
+                    
+                    if (link.getAttribute('href') === `#${currentSection}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}請確保您的股票代碼格式正確。美股通常為 1-5 個英文字母，台股通常為 4 位數字，港股通常為 5 位數字且以 0 開頭。如果系統仍無法識別，您可以使用搜索功能手動查找股票代碼。
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faq2">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqAnswer2">
+                                    生成視頻時間過長怎麼辦？
+                                </button>
+                            </h2>
+                            <div id="faqAnswer2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    視頻生成時間取決於多種因素，包括視頻長度、解析度和使用的效果。如果視頻生成時間過長，您可以：
+                                    <ul>
+                                        <li>降低視頻解析度（如從 4K 變更為 1080p）</li>
+                                        <li>縮短視頻長度，刪除不必要的段落</li>
+                                        <li>減少複雜效果的使用</li>
+                                        <li>檢查電腦資源使用情況，關閉不必要的程式</li>
+                                    </ul>
+                                </div>
+                            </div>
