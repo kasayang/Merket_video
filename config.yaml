@@ -1,0 +1,86 @@
+# 股票數據影片自動化製作系統配置
+
+# API 密鑰
+api_keys:
+  alpha_vantage: ""  # Alpha Vantage API 密鑰
+  finnhub: ""        # Finnhub API 密鑰
+  newsapi: ""        # NewsAPI 密鑰
+  openai: ""         # OpenAI API 密鑰
+  azure_tts: ""      # Azure 語音合成服務密鑰
+
+# 伺服器設定
+server:
+  host: "0.0.0.0"    # 主機
+  port: 5555         # 埠號
+  debug: true        # 除錯模式
+
+# 輸出設定
+output:
+  directory: "output"  # 輸出目錄
+  format: "mp4"        # 默認視頻格式
+  resolution:          # 默認解析度
+    width: 1920
+    height: 1080
+  fps: 30              # 幀率
+
+# 視覺風格設定
+style:
+  theme: "dark"       # 默認主題 (dark, light)
+  font: ""            # 字體
+  colors:             # 顏色設定
+    up: "#00FF7F"     # 上漲顏色
+    down: "#FF4500"   # 下跌顏色
+    neutral: "#1E90FF" # 中性顏色
+
+# 股票模組設定
+modules:
+  stock:
+    sections:           # 段落設定
+      - "intro"         # 簡介
+      - "price"         # 價格分析
+      - "technical"     # 技術指標
+      - "signals"       # 信號分析
+      - "conclusion"    # 結論
+    duration:           # 各段落時長（秒）
+      intro: 5
+      price: 10
+      technical: 12
+      signals: 8
+      conclusion: 5
+
+# 浮水印設定
+watermark:
+  enabled: true        # 是否啟用浮水印
+  text: "自動生成"     # 浮水印文字
+  position: "bottom-right" # 位置
+
+# 音頻設定
+audio:
+  background_music: ""  # 背景音樂文件路徑
+  volume: 0.3           # 背景音樂音量
+  enable_tts: true      # 是否啟用文字轉語音
+  tts_voice: "zh-TW-YunJheNeural" # 默認語音
+  tts_engine: "edge"   # TTS 引擎 (azure, google, edge)
+
+# 文章處理設定
+article:
+  auto_extract_ticker: true  # 自動提取股票代碼
+  max_paragraphs_per_scene: 3  # 每個場景最大段落數
+  highlight_keywords: true   # 是否高亮關鍵詞
+
+# 數位人設定
+digital_human:
+  enabled: false  # 是否默認啟用數位人
+  avatar_template: "templates/digital_humans/default_avatar.mp4"  # 默認數位人模板
+  size_ratio: 0.3  # 大小比例
+  layout: "pip_bottom_right"  # 位置佈局
+
+# 緩存設定
+cache:
+  enabled: true  # 是否啟用緩存
+  expire_days: 7  # 緩存過期天數
+  max_size_mb: 1000  # 最大緩存大小 (MB)
+
+# 系統設定
+system:
+  log_level: "INFO"  # 日誌級別
