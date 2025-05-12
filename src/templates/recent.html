@@ -1,0 +1,417 @@
+{% extends "base.html" %}
+
+{% block title %}最近項目 - 股票數據影片自動化製作系統{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header bg-dark text-white">
+                <h4 class="mb-0">最近項目</h4>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-3">
+                    <div>
+                        <button class="btn btn-success" onclick="window.location.href='/editor'">
+                            <i class="bi bi-plus-circle"></i> 新建項目
+                        </button>
+                        <button class="btn btn-outline-primary" id="importProjectBtn">
+                            <i class="bi bi-folder-plus"></i> 匯入項目
+                        </button>
+                    </div>
+                    <div class="d-flex">
+                        <div class="input-group me-2">
+                            <input type="text" class="form-control" placeholder="搜尋項目..." id="projectSearch">
+                            <button class="btn btn-outline-secondary" type="button">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                        <select class="form-select" style="width: auto;" id="sortProjects">
+                            <option value="date-desc">最新優先</option>
+                            <option value="date-asc">最舊優先</option>
+                            <option value="name-asc">名稱 A-Z</option>
+                            <option value="name-desc">名稱 Z-A</option>
+                        </select>
+                    </div>
+                </div>
+
+                {% if projects %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>標題</th>
+                                <th>最後修改時間</th>
+                                <th>大小</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for project in projects %}
+                            <tr data-project-id="{{ project.file_path }}">
+                                <td>{{ project.title }}</td>
+                                <td>{{ project.modified_time }}</td>
+                                <td>{{ (project.size / 1024)|int }} KB</td>
+                                <td>
+                                    <a href="/editor?project={{ project.file_path }}" class="btn btn-sm btn-primary">
+                                        <i class="bi bi-pencil"></i> 編輯
+                                    </a>
+                                    <button class="btn btn-sm btn-outline-secondary preview-btn" data-project-id="{{ project.file_path }}">
+                                        <i class="bi bi-eye"></i> 預覽
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger delete-btn" data-project-id="{{ project.file_path }}">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <p class="mb-0">目前沒有最近的項目。點擊「新建項目」來開始使用！</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block modals %}
+<!-- 匯入項目模態框 -->
+<div class="modal fade" id="importProjectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">匯入項目</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="importProjectForm">
+                    <div class="mb-3">
+                        <label for="projectFile" class="form-label">選擇項目文件</label>
+                        <input class="form-control" type="file" id="projectFile" accept=".json">
+                        <div class="form-text">選擇之前匯出的項目文件 (.json)</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="confirmImport">匯入</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 確認刪除模態框 -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">確認刪除</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>確定要刪除這個項目嗎？此操作無法撤銷。</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">刪除</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 項目預覽模態框 -->
+<div class="modal fade" id="previewProjectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">項目預覽</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="project-preview-container">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>項目資訊</h6>
+                            <dl class="row">
+                                <dt class="col-sm-4">標題</dt>
+                                <dd class="col-sm-8" id="preview-title">-</dd>
+                                
+                                <dt class="col-sm-4">建立日期</dt>
+                                <dd class="col-sm-8" id="preview-date">-</dd>
+                                
+                                <dt class="col-sm-4">股票代碼</dt>
+                                <dd class="col-sm-8" id="preview-ticker">-</dd>
+                                
+                                <dt class="col-sm-4">字幕數量</dt>
+                                <dd class="col-sm-8" id="preview-subtitles">-</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="preview-image-container">
+                                <img src="" id="preview-image" class="img-fluid mb-2">
+                                <div class="text-center" id="preview-no-image">
+                                    <i class="bi bi-image" style="font-size: 64px; color: #ddd;"></i>
+                                    <p class="text-muted">無預覽圖</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="preview-description">
+                        <h6>項目描述</h6>
+                        <p id="preview-description" class="mb-0">無描述</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                <a href="#" class="btn btn-primary" id="previewEditBtn">編輯項目</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 匯入項目按鈕
+        const importBtn = document.getElementById('importProjectBtn');
+        const importModal = new bootstrap.Modal(document.getElementById('importProjectModal'));
+        const confirmImportBtn = document.getElementById('confirmImport');
+        
+        if (importBtn) {
+            importBtn.addEventListener('click', function() {
+                importModal.show();
+            });
+        }
+        
+        if (confirmImportBtn) {
+            confirmImportBtn.addEventListener('click', function() {
+                const fileInput = document.getElementById('projectFile');
+                if (fileInput && fileInput.files.length > 0) {
+                    const formData = new FormData();
+                    formData.append('project_file', fileInput.files[0]);
+                    
+                    fetch('/api/load_project', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href = `/editor?project=${data.project_data.id}`;
+                        } else {
+                            alert('匯入項目失敗: ' + data.error);
+                        }
+                        importModal.hide();
+                    })
+                    .catch(error => {
+                        console.error('匯入項目時出錯:', error);
+                        alert('匯入項目失敗，請檢查文件格式是否正確');
+                        importModal.hide();
+                    });
+                }
+            });
+        }
+        
+        // 刪除項目按鈕
+        const deleteButtons = document.querySelectorAll('.delete-btn');
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+        const confirmDeleteBtn = document.getElementById('confirmDelete');
+        let projectToDelete = null;
+        
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                projectToDelete = this.getAttribute('data-project-id');
+                deleteModal.show();
+            });
+        });
+        
+        if (confirmDeleteBtn) {
+            confirmDeleteBtn.addEventListener('click', function() {
+                if (projectToDelete) {
+                    fetch(`/api/delete_project`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            project_file: projectToDelete
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // 移除項目行
+                            const row = document.querySelector(`tr[data-project-id="${projectToDelete}"]`);
+                            if (row) {
+                                row.remove();
+                            }
+                            
+                            // 如果沒有剩餘項目，顯示空白訊息
+                            const tbody = document.querySelector('tbody');
+                            if (!tbody.children.length) {
+                                const container = document.querySelector('.table-responsive');
+                                container.innerHTML = `
+                                    <div class="alert alert-info">
+                                        <p class="mb-0">目前沒有最近的項目。點擊「新建項目」來開始使用！</p>
+                                    </div>`;
+                            }
+                        } else {
+                            alert('刪除項目失敗: ' + data.error);
+                        }
+                        deleteModal.hide();
+                    })
+                    .catch(error => {
+                        console.error('刪除項目時出錯:', error);
+                        alert('刪除項目失敗');
+                        deleteModal.hide();
+                    });
+                }
+            });
+        }
+        
+        // 項目預覽按鈕
+        const previewButtons = document.querySelectorAll('.preview-btn');
+        const previewModal = new bootstrap.Modal(document.getElementById('previewProjectModal'));
+        const previewEditBtn = document.getElementById('previewEditBtn');
+        
+        previewButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const projectId = this.getAttribute('data-project-id');
+                
+                // 設置編輯按鈕連結
+                if (previewEditBtn) {
+                    previewEditBtn.href = `/editor?project=${projectId}`;
+                }
+                
+                // 獲取項目詳情
+                fetch(`/api/get_project?project_file=${projectId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // 填充預覽資訊
+                            document.getElementById('preview-title').textContent = data.project.title || '-';
+                            document.getElementById('preview-date').textContent = data.project.created_at || '-';
+                            document.getElementById('preview-ticker').textContent = data.project.ticker || '-';
+                            
+                            if (data.project.subtitles) {
+                                document.getElementById('preview-subtitles').textContent = data.project.subtitles.length;
+                            } else {
+                                document.getElementById('preview-subtitles').textContent = '0';
+                            }
+                            
+                            // 顯示預覽圖（如果有）
+                            const previewImg = document.getElementById('preview-image');
+                            const noPreviewEl = document.getElementById('preview-no-image');
+                            
+                            if (data.project.preview_image) {
+                                previewImg.src = data.project.preview_image;
+                                previewImg.style.display = 'block';
+                                noPreviewEl.style.display = 'none';
+                            } else {
+                                previewImg.style.display = 'none';
+                                noPreviewEl.style.display = 'block';
+                            }
+                            
+                            // 顯示描述
+                            document.getElementById('preview-description').textContent = 
+                                data.project.description || '無描述';
+                        } else {
+                            alert('獲取項目詳情失敗: ' + data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('獲取項目詳情時出錯:', error);
+                        alert('無法取得項目詳情');
+                    });
+                
+                previewModal.show();
+            });
+        });
+        
+        // 項目搜尋功能
+        const searchInput = document.getElementById('projectSearch');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const rows = document.querySelectorAll('tbody tr');
+                
+                rows.forEach(row => {
+                    const title = row.querySelector('td:first-child').textContent.toLowerCase();
+                    if (title.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        }
+        
+        // 項目排序功能
+        const sortSelect = document.getElementById('sortProjects');
+        if (sortSelect) {
+            sortSelect.addEventListener('change', function() {
+                const sortMethod = this.value;
+                const tbody = document.querySelector('tbody');
+                const rows = Array.from(tbody.querySelectorAll('tr'));
+                
+                // 清空表格
+                while (tbody.firstChild) {
+                    tbody.removeChild(tbody.firstChild);
+                }
+                
+                // 根據排序方法排序行
+                switch (sortMethod) {
+                    case 'date-desc': // 最新優先
+                        rows.sort((a, b) => {
+                            const dateA = new Date(a.querySelector('td:nth-child(2)').textContent);
+                            const dateB = new Date(b.querySelector('td:nth-child(2)').textContent);
+                            return dateB - dateA;
+                        });
+                        break;
+                    case 'date-asc': // 最舊優先
+                        rows.sort((a, b) => {
+                            const dateA = new Date(a.querySelector('td:nth-child(2)').textContent);
+                            const dateB = new Date(b.querySelector('td:nth-child(2)').textContent);
+                            return dateA - dateB;
+                        });
+                        break;
+                    case 'name-asc': // 名稱 A-Z
+                        rows.sort((a, b) => {
+                            const nameA = a.querySelector('td:first-child').textContent;
+                            const nameB = b.querySelector('td:first-child').textContent;
+                            return nameA.localeCompare(nameB);
+                        });
+                        break;
+                    case 'name-desc': // 名稱 Z-A
+                        rows.sort((a, b) => {
+                            const nameA = a.querySelector('td:first-child').textContent;
+                            const nameB = b.querySelector('td:first-child').textContent;
+                            return nameB.localeCompare(nameA);
+                        });
+                        break;
+                }
+                
+                // 重新加入行
+                rows.forEach(row => {
+                    tbody.appendChild(row);
+                });
+            });
+        }
+    });
+</script>
+{% endblock %}
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href = `/editor?project=${data.project_data.id}`;
+                        }
