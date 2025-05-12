@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>視頻編輯器</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid vh-100 d-flex flex-column">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">影片編輯器</a>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">檔案</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" id="newProjectBtn">新建專案</a></li>
+                                <li><a class="dropdown-item" href="#" id="openProjectBtn">開啟專案</a></li>
+                                <li><a class="dropdown-item" href="#" id="saveProjectBtn">儲存專案</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#" id="exportVideoBtn">匯出影片</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">編輯</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" id="undoBtn">復原</a></li>
+                                <li><a class="dropdown-item" href="#" id="redoBtn">重做</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#" id="cutBtn">剪下</a></li>
+                                <li><a class="dropdown-item" href="#" id="copyBtn">複製</a></li>
+                                <li><a class="dropdown-item" href="#" id="pasteBtn">貼上</a></li>
+                                <li><a class="dropdown-item" href="#" id="deleteBtn">刪除</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">檢視</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" id="zoomInBtn">放大</a></li>
+                                <li><a class="dropdown-item" href="#" id="zoomOutBtn">縮小</a></li>
+                                <li><a class="dropdown-item" href="#" id="fitToViewBtn">適應視窗</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="row flex-grow-1 g-0">
+            <!-- 左側面板 - 媒體庫 -->
+            <div class="col-md-3 bg-light d-flex flex-column border-end">
+                <div class="p-2 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">媒體庫</h5>
+                    <div>
+                        <button class="btn btn-sm btn-outline-primary" id="importMediaBtn">
+                            <i class="bi bi-plus-lg"></i> 匯入
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary" id="organizeMediaBtn">
+                            <i class="bi bi-grid"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 標籤頁切換 -->
+                <ul class="nav nav-tabs mt-2" id="mediaLibraryTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="all-media-tab" data-bs-toggle="tab" data-bs-target="#all-media" type="button" role="tab">所有媒體</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="video-tab" data-bs-toggle="tab" data-bs-target="#video-media" type="button" role="tab">視頻</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="audio-tab" data-bs-toggle="tab" data-bs-target="#audio-media" type="button" role="tab">音訊</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="image-tab" data-bs-toggle="tab" data-bs-target="#image-media" type="button" role="tab">圖片</button>
+                    </li>
+                </ul>
+                
+                <!-- 標籤頁內容 -->
+                <div class="tab-content flex-grow-1 overflow-auto" id="mediaLibraryTabsContent">
+                    <div class="tab-pane fade show active p-2" id="all-media" role="tabpanel">
+                        <div class="media-grid" id="allMediaContainer"></div>
+                    </div>
+                    <div class="tab-pane fade p-2" id="video-media" role="tabpanel">
+                        <div class="media-grid" id="videoMediaContainer"></div>
+                    </div>
+                    <div class="tab-pane fade p-2" id="audio-media" role="tabpanel">
+                        <div class="media-grid" id="audioMediaContainer"></div>
+                    </div>
+                    <div class="tab-pane fade p-2" id="image-media" role="tabpanel">
+                        <div class="media-grid" id="imageMediaContainer"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 中間區域 - 預覽窗口 -->
+            <div class="col-md-6 d-flex flex-column">
+                <div class="preview-container flex-grow-1">
+                    <div id="previewWindow">
+                        <!-- 視頻預覽區域 -->
+                        <video id="previewPlayer" controls></video>
+                    </div>
+                    
+                    <div class="preview-controls p-2">
+                        <div class="btn-group">
+                            <button class="btn btn-outline-secondary" id="playPauseBtn">
+                                <i class="bi bi-play-fill"></i>
+                            </button>
+                            <button class="btn btn-outline-secondary" id="stopBtn">
+                                <i class="bi bi-stop-fill"></i>
+                            </button>
+                            <button class="btn btn-outline-secondary" id="previousFrameBtn">
+                                <i class="bi bi-skip-backward-fill"></i>
+                            </button>
+                            <button class="btn btn-outline-secondary" id="nextFrameBtn">
+                                <i class="bi bi-skip-forward-fill"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="time-display ms-2">
+                            <span id="currentTimeDisplay">00:00:00</span> / <span id="durationDisplay">00:00:00</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 時間軸區域 -->
+                <div class="timeline-container" id="timelineContainer">
+                    <!-- 時間軸將由 JS 創建 -->
+                </div>
+            </div>
+            
+            <!-- 右側面板 - 屬性與效果 -->
+            <div class="col-md-3 bg-light d-flex flex-column border-start">
+                <div class="p-2 border-bottom">
+                    <h5 class="mb-0">效果與屬性</h5>
+                </div>
+                
+                <!-- 標籤頁切換 -->
+                <ul class="nav nav-tabs mt-2" id="propertiesTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="clip-tab" data-bs-toggle="tab" data-bs-target="#clip-props" type="button" role="tab">片段</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="effects-tab" data-bs-toggle="tab" data-bs-target="#effects-panel" type="button" role="tab">特效</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="text-tab" data-bs-toggle="tab" data-bs-target="#text-panel" type="button" role="tab">文字</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="transition-tab" data-bs-toggle="tab" data-bs-target="#transition-panel" type="button" role="tab">轉場</button>
+                    </li>
+                </ul>
+                
+                <!-- 標籤頁內容 -->
+                <div class="tab-content flex-grow-1 overflow-auto" id="propertiesTabsContent">
+                    <div class="tab-pane fade show active p-3" id="clip-props" role="tabpanel">
+                        <div id="clipPropertiesContainer">
+                            <!-- 未選擇片段時的提示 -->
+                            <div class="text-center text-muted" id="noClipSelected">
+                                <i class="bi bi-film" style="font-size: 2rem;"></i>
+                                <p>選擇一個時間軸片段以編輯屬性</p>
+                            </div>
+                            
+                            <!-- 片段屬性表單 (選擇片段時顯示) -->
+                            <div id="clipPropertiesForm" style="display: none;">
+                                <div class="mb-3">
+                                    <label for="clipName" class="form-label">名稱</label>
+                                    <input type="text" class="form-control" id="clipName">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="clipStartTime" class="form-label">開始時間</label>
+                                    <input type="number" class="form-control" id="clipStartTime" step="0.01" min="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="clipDuration" class="form-label">持續時間</label>
+                                    <input type="number" class="form-control" id="clipDuration" step="0.01" min="0.01">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="clipVolume" class="form-label">音量</label>
+                                    <input type="range" class="form-range" id="clipVolume" min="0" max="1" step="0.01" value="1">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="clipSpeed" class="form-label">速度</label>
+                                    <select class="form-select" id="clipSpeed">
+                                        <option value="0.25">0.25x</option>
+                                        <option value="0.5">0.5x</option>
+                                        <option value="0.75">0.75x</option>
+                                        <option value="1" selected>1.0x</option>
+                                        <option value="1.25">1.25x</option>
+                                        <option value="1.5">1.5x</option>
+                                        <option value="2">2.0x</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade p-3" id="digitalHuman-panel" role="tabpanel">
+                        <div class="mb-3">
+                            <label for="digitalHumanModel" class="form-label">選擇模型</label>
+                            <select class="form-select" id="digitalHumanModel">
+                                <option value="">不使用數字人</option>
+                                <option value="male1">男性主播1</option>
+                                <option value="female1">女性主播1</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="digitalHumanPosition" class="form-label">位置</label>
+                            <select class="form-select" id="digitalHumanPosition">
+                                <option value="left">左側</option>
+                                <option value="right" selected>右側</option>
+                                <option value="center">居中</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="digitalHumanSize" class="form-label">大小</label>
+                            <input type="range" class="form-range" id="digitalHumanSize" min="10" max="100" step="5" value="40">
+                            <div class="text-end"><span id="digitalHumanSizeValue">40</span>%</div>
+                        </div>
+                        <div class="mb-3">
+                            <button class="btn btn-primary w-100" id="addDigitalHumanBtn">添加到時間軸</button>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade p-3" id="effects-panel" role="tabpanel">
+                        <div class="effects-gallery">
+                            <h6>濾鏡</h6>
+                            <div class="d-flex flex-wrap">
+                                <div class="effect-item" data-effect="none">
+                                    <div class="effect-preview">原始</div>
+                                    <div class="effect-name">無</div>
+                                </div>
+                                <div class="effect-item" data-effect="grayscale">
+                                    <div class="effect-preview" style="filter: grayscale(1);">灰階</div>
+                                    <div class="effect-name">灰階</div>
+                                </div>
+                                <div class="effect-item" data-effect="sepia">
+                                    <div class="effect-preview" style="filter: sepia(1);">懷舊</div>
+                                    <div class="effect-name">懷舊</div>
+                                </div>
+                                <div class="effect-item" data-effect="saturate">
+                                    <div class="effect-preview" style="filter: saturate(2);">飽和</div>
+                                    <div class="effect-name">飽和</div>
+                                </div>
+                            </div>
+                            
+                            <h6 class="mt-3">調整</h6>
+                            <div class="mb-3">
+                                <label for="brightnessSlider" class="form-label">亮度</label>
+                                <input type="range" class="form-range" id="brightnessSlider" min="0" max="2" step="0.1" value="1">
+                            </div>
+                            <div class="mb-3">
+                                <label for="contrastSlider" class="form-label">對比度</label>
+                                <input type="range" class="form-range" id="contrastSlider" min="0" max="2" step="0.1" value="1">
+                            </div>
+                            <div class="mb-3">
+                                <label for="saturationSlider" class="form-label">飽和度</label>
+                                <input type="range" class="form-range" id="saturationSlider" min="0" max="2" step="0.1" value="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade p-3" id="text-panel" role="tabpanel">
+                        <div class="mb-3">
+                            <label for="textContent" class="form-label">文本內容</label>
+                            <textarea class="form-control" id="textContent" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="textFont" class="form-label">字體</label>
+                            <select class="form-select" id="textFont">
+                                <option value="Arial, sans-serif">Arial</option>
+                                <option value="'Times New Roman', serif">Times New Roman</option>
+                                <option value="'Courier New', monospace">Courier New</option>
+                                <option value="Georgia, serif">Georgia</option>
+                                <option value="Verdana, sans-serif">Verdana</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="textSize" class="form-label">大小</label>
+                            <input type="range" class="form-range" id="textSize" min="12" max="72" step="1" value="24">
+                            <div class="text-end"><span id="textSizeValue">24</span>px</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="textColor" class="form-label">顏色</label>
+                            <input type="color" class="form-control" id="textColor" value="#ffffff">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label d-block">對齊</label>
+                            <div class="btn-group" role="group">
+                                <input type="radio" class="btn-check" name="textAlign" id="alignLeft" value="left" checked>
+                                <label class="btn btn-outline-secondary" for="alignLeft">
+                                    <i class="bi bi-text-left"></i>
+                                </label>
+                                
+                                <input type="radio" class="btn-check" name="textAlign" id="alignCenter" value="center">
+                                <label class="btn btn-outline-secondary" for="alignCenter">
+                                    <i class="bi bi-text-center"></i>
+                                </label>
+                                
+                                <input type="radio" class="btn-check" name="textAlign" id="alignRight" value="right">
+                                <label class="btn btn-outline-secondary" for="alignRight">
+                                    <i class="bi bi-text-right"></i>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <button class="btn btn-primary w-100" id="addTextBtn">添加到時間軸</button>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade p-3" id="transition-panel" role="tabpanel">
+                        <div class="transitions-gallery">
+                            <div class="transition-item" data-transition="none">
+                                <div class="transition-preview">無</div>
+                                <div class="transition-name">無轉場</div>
+                            </div>
+                            <div class="transition-item" data-transition="fade">
+                                <div class="transition-preview">淡入淡出</div>
+                                <div class="transition-name">淡入淡出</div>
+                            </div>
+                            <div class="transition-item" data-transition="wipe-right">
+                                <div class="transition-preview">右推</div>
+                                <div class="transition-name">右推</div>
+                            </div>
+                            <div class="transition-item" data-transition="wipe-left">
+                                <div class="transition-preview">左推</div>
+                                <div class="transition-name">左推</div>
+                            </div>
+                            <div class="transition-item" data-transition="zoom-in">
+                                <div class="transition-preview">縮放</div>
+                                <div class="transition-name">縮放</div>
+                            </div>
+                            <div class="transition-item" data-transition="dissolve">
+                                <div class="transition-preview">溶解</div>
+                                <div class="transition-name">溶解</div>
+                            </div>
+                        </div>
+                        <div class="mb-3 mt-3">
+                            <label for="transitionDuration" class="form-label">持續時間</label>
+                            <input type="range" class="form-range" id="transitionDuration" min="0.1" max="3" step="0.1" value="1">
+                            <div class="text-end"><span id="transitionDurationValue">1</span> 秒</div>
+                        </div>
+                        <div class="mb-3">
+                            <button class="btn btn-primary w-100" id="applyTransitionBtn">應用到選中片段</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 匯入媒體對話框 -->
+        <div class="modal fade" id="importMediaModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">匯入媒體</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="mediaFileInput" class="form-label">選擇檔案</label>
+                            <input class="form-control" type="file" id="mediaFileInput" multiple accept="video/*,audio/*,image/*">
+                        </div>
+                        <div class="progress" style="display: none;">
+                            <div class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary" id="confirmImportBtn">匯入</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 匯出專案對話框 -->
+        <div class="modal fade" id="exportVideoModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">匯出影片</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="exportFileName" class="form-label">檔案名稱</label>
+                            <input type="text" class="form-control" id="exportFileName" value="我的影片">
+                        </div>
+                        <div class="mb-3">
+                            <label for="exportFormat" class="form-label">格式</label>
+                            <select class="form-select" id="exportFormat">
+                                <option value="mp4">MP4</option>
+                                <option value="webm">WebM</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="exportResolution" class="form-label">解析度</label>
+                            <select class="form-select" id="exportResolution">
+                                <option value="1080p">1080p (1920x1080)</option>
+                                <option value="720p">720p (1280x720)</option>
+                                <option value="480p">480p (854x480)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="exportBitrate" class="form-label">比特率</label>
+                            <select class="form-select" id="exportBitrate">
+                                <option value="high">高 (8 Mbps)</option>
+                                <option value="medium" selected>中 (5 Mbps)</option>
+                                <option value="low">低 (2 Mbps)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary" id="confirmExportBtn">匯出</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <script src="{{ url_for('static', filename='js/timeline.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/preview.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
