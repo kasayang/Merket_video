@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>錯誤 - 股票數據影片自動化製作系統</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- 自定義樣式 -->
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+        }
+        .error-container {
+            text-align: center;
+            max-width: 600px;
+            padding: 40px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        .error-code {
+            font-size: 72px;
+            font-weight: bold;
+            color: #dc3545;
+            margin-bottom: 20px;
+        }
+        .error-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            color: #dc3545;
+        }
+        .error-message {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: #343a40;
+        }
+        .back-home {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-code">{{ error_code }}</div>
+        <div class="error-icon">
+            {% if error_code == 404 %}
+                <i class="bi bi-question-circle"></i>
+            {% elif error_code == 500 %}
+                <i class="bi bi-exclamation-triangle"></i>
+            {% else %}
+                <i class="bi bi-emoji-frown"></i>
+            {% endif %}
+        </div>
+        <div class="error-message">{{ error_message }}</div>
+        <p class="text-muted">抱歉，我們無法完成您的請求。</p>
+        <div class="back-home">
+            <a href="/" class="btn btn-primary">返回首頁</a>
+            <button class="btn btn-outline-secondary ms-2" onclick="window.history.back()">返回上一頁</button>
+        </div>
+    </div>
+
+    <footer class="fixed-bottom text-center p-3">
+        <p class="small text-muted">股票數據影片自動化製作系統 © {{ current_year }}</p>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
