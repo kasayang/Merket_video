@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% block title %}首頁 - 股票數據影片自動化製作系統{% endblock %}
+
+{% block content %}
+<!-- 主橫幅 -->
+<div class="jumbotron text-center" style="background-color: #343a40; color: white; padding: 100px 0; margin-bottom: 30px;">
+    <div class="container">
+        <h1 class="display-4">股票數據影片自動化製作系統</h1>
+        <p class="lead">輕鬆將股票分析文章轉換為專業視頻，透過智能文本處理和精確的股票數據可視化</p>
+        <a href="/editor" class="btn btn-primary btn-lg mt-4">
+            <i class="bi bi-play-circle"></i> 開始使用
+        </a>
+    </div>
+</div>
+
+<!-- 核心功能 -->
+<div class="container">
+    <h2 class="text-center mb-5">核心功能</h2>
+    
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-graph-up-arrow text-primary" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                    <h3 class="card-title">股票數據分析</h3>
+                    <p class="card-text">自動獲取並分析股票數據，計算重要的技術指標，包括移動平均線、RSI、MACD和布林帶等，提供全面的市場背景。</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-file-earmark-text text-primary" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                    <h3 class="card-title">文章智能分析</h3>
+                    <p class="card-text">自動解析股票分析文章，識別關鍵資訊，提取股票代碼、情感傾向，轉換為結構化的內容場景。</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-camera-video text-primary" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                    <h3 class="card-title">專業視頻生成</h3>
+                    <p class="card-text">自動生成專業水準的股票分析視頻，包括動態圖表、字幕和旁白，支援數位人播報功能。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-mic text-primary" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                    <h3 class="card-title">語音合成技術</h3>
+                    <p class="card-text">使用先進的文字轉語音技術，將文章內容轉換為自然流暢的語音旁白，支援多種語言和聲音。</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-sliders text-primary" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                    <h3 class="card-title">精確時間軸控制</h3>
+                    <p class="card-text">提供類似剪輯軟體的時間軸編輯功能，可精確控制視頻、音頻和字幕的同步和時間，實現專業的後期編輯效果。</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-video3 text-primary" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                    <h3 class="card-title">數位人播報</h3>
+                    <p class="card-text">整合數位人技術，讓專業主播為您呈現股票分析內容，提升視頻的專業度和觀賞性。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 使用流程 -->
+<div class="container mt-5">
+    <h2 class="text-center mb-5">使用流程</h2>
+    
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <div class="p-3">
+                                <div class="rounded-circle bg-primary text-white d-inline-flex justify-content-center align-items-center" style="width: 60px; height: 60px;">
+                                    <h3 class="m-0">1</h3>
+                                </div>
+                                <h5 class="mt-3">匯入文章</h5>
+                                <p class="small">上傳股票分析文章或直接輸入文字</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <div class="p-3">
+                                <div class="rounded-circle bg-primary text-white d-inline-flex justify-content-center align-items-center" style="width: 60px; height: 60px;">
+                                    <h3 class="m-0">2</h3>
+                                </div>
+                                <h5 class="mt-3">編輯內容</h5>
+                                <p class="small">調整字幕、控制語速、編輯時間軸</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <div class="p-3">
+                                <div class="rounded-circle bg-primary text-white d-inline-flex justify-content-center align-items-center" style="width: 60px; height: 60px;">
+                                    <h3 class="m-0">3</h3>
+                                </div>
+                                <h5 class="mt-3">預覽效果</h5>
+                                <p class="small">即時預覽視頻效果並進行微調</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <div class="p-3">
+                                <div class="rounded-circle bg-primary text-white d-inline-flex justify-content-center align-items-center" style="width: 60px; height: 60px;">
+                                    <h3 class="m-0">4</h3>
+                                </div>
+                                <h5 class="mt-3">生成視頻</h5>
+                                <p class="small">一鍵生成專業股票分析視頻</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 開始使用 CTA -->
+<div class="container text-center my-5 py-5">
+    <h2>準備好開始了嗎？</h2>
+    <p class="lead">立即體驗智能化視頻製作流程</p>
+    <div class="mt-4">
+        <a href="/editor" class="btn btn-primary btn-lg me-3">
+            <i class="bi bi-pencil-square"></i> 進入編輯器
+        </a>
+        <a href="/templates" class="btn btn-outline-primary btn-lg">
+            <i class="bi bi-collection"></i> 瀏覽模板
+        </a>
+    </div>
+</div>
+
+<!-- 關於部分 -->
+<div class="container mt-5 pt-5" id="about">
+    <h2 class="text-center mb-4">關於系統</h2>
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <p>股票數據影片自動化製作系統是一個專為金融分析師、投資顧問和內容創作者設計的專業工具。該系統能夠自動將文字形式的股票分析報告轉換為具有專業水準的視頻內容，包含動態圖表、專業配音和字幕。</p>
+                    <p>無論您是需要為客戶準備投資報告，還是為社交媒體製作金融內容，本系統都能幫助您大幅提高工作效率，同時保持內容的專業性和吸引力。</p>
+                    <p class="mb-0">系統採用模組化設計，各個功能組件互相獨立，便於擴展和維護。您可以根據需求調整各個參數，實現高度客製化的視頻內容。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
